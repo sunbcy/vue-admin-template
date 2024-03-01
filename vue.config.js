@@ -6,7 +6,7 @@ function resolve(dir) {
   return path.join(__dirname, dir)
 }
 
-const name = defaultSettings.title || 'vue Admin Template' // page title
+const name = defaultSettings.title || 'WebToOls' // page title
 
 // If your port is set to 80,
 // use administrator privileges to execute the command line.
@@ -35,6 +35,15 @@ module.exports = {
     overlay: {
       warnings: false,
       errors: true
+    },
+    proxy: {
+      '^/api': {
+        target: 'http://127.0.0.1:5000', //Flask后端地址
+        changeOrigin: true,
+        // pathRewrite: {
+        //   '^/api': ''
+        // }
+      }
     },
     before: require('./mock/mock-server.js')
   },
