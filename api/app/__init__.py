@@ -42,3 +42,4 @@ def register_blueprints(app):
 
     from app.website import website_bp
     app.register_blueprint(website_bp, url_prefix='/api/website')
+ 

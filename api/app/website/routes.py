@@ -53,8 +53,11 @@ def get_page_links(url):
                 if extracted_domain not in new_domains and extracted_domain != url.split('://')[1].split('/')[0].split('?')[0]:
                     new_domains.append(extracted_domain)
             except IndexError as e:
-                print(url)
+                print_exc(e, f'错误URL:{url}')
                 break
+        # 本地数据表查询new_domains中的所有域名, 如果不在库中则入库
+        
+        
         print(new_domains)  # 输入的新URL包含的域名
         return absolute_links
     except Exception as e:

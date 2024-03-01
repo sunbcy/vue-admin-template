@@ -17,3 +17,6 @@ class Website(db.Model):
         db.session.commit()
         return self
     
+    
+if __name__ == '__main__':
+    pass
