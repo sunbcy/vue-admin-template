@@ -26,7 +26,7 @@ import {
 export default {
   data() {
     return {
-      searchUrl: 'cn.bing.com',
+      searchUrl: 'www.baidu.com',
       searchResults: []
     };
   },

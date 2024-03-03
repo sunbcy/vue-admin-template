@@ -11,6 +11,7 @@ import jsonify
 from urllib.parse import urljoin, urlparse
 from traceback import print_exc
 import json
+from db import secondDomainScheme, thirdDomainScheme
 
 
 def get_page_info(url):
@@ -40,6 +41,8 @@ def get_page_info(url):
         return {'error': str(e)}
 
 def get_page_links(url):
+    sec_oper = secondDomainScheme()
+    third_oper = thirdDomainScheme()
     try:
         res = requests.get(url)
         res.raise_for_status()
@@ -52,11 +55,30 @@ def get_page_links(url):
                 extracted_domain = each_link.split('://')[1].split('/')[0].split('?')[0]
                 if extracted_domain not in new_domains and extracted_domain != url.split('://')[1].split('/')[0].split('?')[0]:
                     new_domains.append(extracted_domain)
-            except IndexError as e:
-                print_exc(e, f'错误URL:{url}')
+            except Exception as e:
+                print_exc()  # url.split('/')[-1]
+                print(f'错误URL:{each_link}')
                 break
         # 本地数据表查询new_domains中的所有域名, 如果不在库中则入库
         
+        two_level_domain_nm = []
+        three_level_domain_nm = []
+        for _ in new_domains:  # 先判断_是几级域名再分别查询入库(只取2,3级域名) baidu.com  www.baidu.com xxx.www.baidu.com
+            two_level_domain_nm.append('.'.join([_.split('.')[-2], _.split('.')[-1]]))
+            three_level_domain_nm.append('.'.join([_.split('.')[-3], _.split('.')[-2], _.split('.')[-1]]))
+        two_level_domain_nm = list(set(two_level_domain_nm))
+        three_level_domain_nm = list(set(three_level_domain_nm))
+        
+        for _ in two_level_domain_nm: # 写入二级域名
+            if not sec_oper.query_record(second_domain=_):
+                sec_oper.insert_domain(second_domain=_)
+        for _ in three_level_domain_nm: # 写入三级域名
+            if not third_oper.query_record(third_domain=_):
+                third_oper.insert_domain(third_domain=_)
+        for _ in two_level_domain_nm: # 更新当前二级域名的数量
+            sec_dn_id = sec_oper.get_id_by_sec_dname(second_domain=_)
+            sec_3level_num = sec_oper.query_three_level_dn_num(query_id=sec_dn_id)
+            sec_oper.update_subdomain_num(second_domain=_, sub_domain_num=sec_3level_num)
         
         print(new_domains)  # 输入的新URL包含的域名
         return absolute_links
