@@ -44,7 +44,8 @@ def get_page_links(url):
     sec_oper = secondDomainScheme()
     third_oper = thirdDomainScheme()
     try:
-        res = requests.get(url)
+        headers = {'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36'}
+        res = requests.get(url, headers=headers)
         res.raise_for_status()
         soup = BeautifulSoup(res.text, 'html.parser')
         links = [a['href'] for a in soup.find_all('a', href=True)]
@@ -64,8 +65,12 @@ def get_page_links(url):
         two_level_domain_nm = []
         three_level_domain_nm = []
         for _ in new_domains:  # 先判断_是几级域名再分别查询入库(只取2,3级域名) baidu.com  www.baidu.com xxx.www.baidu.com
-            two_level_domain_nm.append('.'.join([_.split('.')[-2], _.split('.')[-1]]))
-            three_level_domain_nm.append('.'.join([_.split('.')[-3], _.split('.')[-2], _.split('.')[-1]]))
+            try:
+                two_level_domain_nm.append('.'.join([_.split('.')[-2], _.split('.')[-1]]))
+                three_level_domain_nm.append('.'.join([_.split('.')[-3], _.split('.')[-2], _.split('.')[-1]]))
+            except Exception as e:
+                print_exc()
+                print(f'错误URL:{_}')
         two_level_domain_nm = list(set(two_level_domain_nm))
         three_level_domain_nm = list(set(three_level_domain_nm))
         
@@ -81,9 +86,10 @@ def get_page_links(url):
             sec_oper.update_subdomain_num(second_domain=_, sub_domain_num=sec_3level_num)
         
         print(new_domains)  # 输入的新URL包含的域名
+        absolute_links = [i for i in absolute_links if 'http' in i]
         return absolute_links
     except Exception as e:
-        print_exc(e)
+        print_exc()
         return {'error': str(e)}
 
 
