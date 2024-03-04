@@ -56,23 +56,23 @@ export const constantRoutes = [
   },
 
   {
-    path: '/example',
+    path: '/findjob',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'el-icon-s-help' },
+    redirect: '/findjob/liepin',
+    name: 'FindJobs',
+    meta: { title: '找工作', icon: 'el-icon-money' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'liepin',
+        name: 'Liepin',
+        component: () => import('@/views/liepin/index'),
+        meta: { title: '猎聘网', icon: 'liepin' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'boss',
+        name: 'Boss',
+        component: () => import('@/views/boss/index'),
+        meta: { title: 'Boss', icon: 'boss' }
       }
     ]
   },
