@@ -104,6 +104,9 @@ def get_links_from_url(newurl):
         page_links = get_page_links('http://' + newurl)
     print(page_links)  # list type
     # 访问每一个links,找出新的URL,并找出二级URL的所属三级URL.
-    value = {'searchResults': [{'id': page_links.index(j) + 1, 'url_title': j } for j in (page_links)]}
-    # print(value)
-    return response_with(resp.SUCCESS_200, value=value)  # page_links
+    try:
+        value = {'searchResults': [{'id': page_links.index(j) + 1, 'url_title': j } for j in (page_links)]}
+        return response_with(resp.SUCCESS_200, value=value)  # page_links
+    except Exception as e:
+        value = {'searchResults': []}
+        return response_with(resp.NOT_FOUND_HANDLER_404, value=value)
