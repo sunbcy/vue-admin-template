@@ -30,7 +30,7 @@ class ThirdDomain(Base):  # 三级域名
     second_domain = relationship('SecondDomain') # 声明与SecondDomain表的关系，可选，用于方便查询时的联结操作
     ctime = Column(DateTime, server_default=func.now())
     
-class secondDomainScheme:
+class secondDomainScheme:  # 二级域名方法
     def __init__(self) -> None:
         pass
     
@@ -123,8 +123,7 @@ class secondDomainScheme:
         DBSession.close()
         return result_id
         
-    
-class thirdDomainScheme:
+class thirdDomainScheme:  # 二级域名方法
     def __init__(self) -> None:
         pass
     
@@ -222,7 +221,6 @@ if __name__ == '__main__':
     # result = sec_op.query_record(second_domain='baidu.com')
     # result = sec_op.query_record(third_domain='tiebabaidu.com')
     result = sec_op.get_id_by_sec_dname(second_domain='baidu.com')
-    
     
     # 查询三级域名数量
     # result = sec_op.query_three_level_dn_num(query_id=1)
